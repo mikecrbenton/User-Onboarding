@@ -6,14 +6,20 @@ import Display from './Display'
 
 
 const formSchema = yup.object().shape( {
-   name: yup.string().required("Name is Required"),
+   name: yup.string()
+      .required("Name is Required"),
    email: yup.string()  
       .email("Email must be valid")
       .required("Email is Required"),
    password: yup.string()
       .required('Password is Required') 
       .min(8, 'You need 8 characters minimum ( ).')
-      .matches(/[a-zA-Z]/, 'Password can only contain letters.'),
+      .matches(/[a-zA-Z]/, 'Password can only contain letters'),
+   language: yup.string(),
+   cplusplus: yup.boolean(),
+   java: yup.boolean(),
+   python: yup.boolean(),
+   assembly: yup.boolean(),
    terms: yup.boolean().oneOf([true], "Need Agreement To Terms Of Use")
 } ) 
 
@@ -21,19 +27,31 @@ const formSchema = yup.object().shape( {
 function Form(){
 // STATE=========================
 
+// DEFAULT STATE
 const [formState, setFormState] = useState( {
     name: "",
     email: "",
     password: "",
-    terms: false
+    language: "",
+    cplusplus: false,
+    java: false,
+    python: false,
+    assembly: false, 
+    terms: false,
 });
-
+// ERROR STATE
 const [errorState, setErrorState] = useState( {
    name: "",
    email: "",
    password: "",
+   language: "",
+   cplusplus: "",
+   java: "",
+   python: "",
+   assembly: "",
    terms: ""
 });
+// or useState( { ...formState, terms: false} )
 
 // STATE TO DISPLAY RETURNED DATA FROM POST
 const [displayForms, setDisplayForms] = useState([]);
@@ -48,7 +66,7 @@ const [buttonState, setButtonState] = useState(true);
 useEffect(() => {
    formSchema.isValid(formState)
      .then(valid => {
-        setButtonState(!valid);
+        setButtonState(!valid); // don't hardcode - base on value returned
    });
  }, [formState]);
 
@@ -61,25 +79,26 @@ const validate = (e) => {
                   ? e.target.checked 
                   : e.target.value );
    
-   yup.reach( formSchema, e.target.name ).validate(value)
-      .then( (validation) => {
-         setErrorState({
-            ...errorState,
-            [e.target.name]: ""
+   yup.reach( formSchema, e.target.name )
+      .validate(value)
+         .then( (validation) => {
+            setErrorState({
+               ...errorState,
+               [e.target.name]: "" //set as empty string - clear when valid
+            })
          })
-      })
-      .catch( (error) => {
-         setErrorState({
-            ...errorState,
-            [e.target.name]: error.errors[0]
+         .catch( (error) => {
+            setErrorState({
+               ...errorState,
+               [e.target.name]: error.errors[0]
+            })
          })
-      })
 }
 
 // SUBMIT------------------------
 
 const submitForm = (e) => {
-   // PREVENT PAGE FROM REFRESHING
+   // NEEDED TO PREVENT PAGE FROM REFRESHING
    e.preventDefault();
    // POST
    axios.post( "https://reqres.in/api/users", formState )
@@ -94,7 +113,7 @@ const submitForm = (e) => {
 // INPUT-------------------------
 
 const inputChange = (e) => {
-   // NEEDED IN REACT
+   // NEEDED IN REACT TO KEEP THE SYNTHETIC EVENT FOR ASYNC EVENTS
    e.persist();
    // CALL VALIDATE 
    validate(e);
@@ -110,55 +129,121 @@ const inputChange = (e) => {
 }
 
 // DISPLAY TO SCREEN---------------
-
 const addNewForm = ( newForm ) => {
    setDisplayForms( [...displayForms, newForm] )
 }
 
+// YUP INLINE STYLES
+let yupStyling = {
+   color: 'red',
+   fontSize: '.8rem'
+}
 
    return(
       <div>
-         <StyledForm onSubmit={submitForm} >
-            <label htmlFor="nameField">
+         <StyledForm id="primary-form" onSubmit={submitForm} >
+            <label htmlFor="name">
                Name 
                <input 
                type='text'   id='nameField'
                name='name'   value={formState.name}
+               data-cy="nameInput"
                onChange={inputChange}
                />
+                { ( errorState.name.length > 0 ) 
+                     ? <p style={yupStyling}>{errorState.name}</p> 
+                     : null }
             </label>
           
-            <label htmlFor="emailField">
+            <label htmlFor="email">
                Email 
                <input 
                type='email'   id='emailField'
                name='email'   value={formState.email}
+               data-cy="emailInput"
                onChange={inputChange}
                />
-               { ( errorState.email.length > 0 ) ? <p>{errorState.email}</p> : null }
+               { ( errorState.email.length > 0 ) 
+                     ? <p style={yupStyling}>{errorState.email}</p> 
+                     : null }
             </label>
 
-            <label htmlFor="passwordField">
+            <label htmlFor="password">
                Password 
                <input 
                type='password'   id='passwordField'
                name='password'   value={formState.password}
+               data-cy="passwordInput"
                onChange={inputChange}
                />
                { (errorState.terms.length > 0) ? <p>{errorState.terms}</p> : null }
             </label>
 
-            <label htmlFor="termsField">
+            <label htmlFor="language">
+               What Language is your Favorite?
+               <select name="language" onChange={inputChange}>
+                  <option value="html">HTML</option>
+                  <option value="css">CSS</option>
+                  <option value="javascript">JavaScript</option>
+                  <option value="react">React</option>
+               </select>
+            </label>
+
+            <label>What Other Ones?</label>
+            <Checkboxes>
+              
+               <div class="checkboxDiv">          
+                  <input
+                     type="checkbox"  id="c-check" 
+                     name="cplusplus"
+                     checked={formState.cplusplus}
+                     onChange={inputChange} />               
+                  <label htmlFor="cplusplus">C++</label>
+               </div>
+
+               <div class="checkboxDiv">          
+                  <input
+                     type="checkbox"  id="j-check" 
+                     name="java"
+                     checked={formState.java}
+                     onChange={inputChange} />               
+                  <label htmlFor="java">Java</label>
+               </div>
+
+               <div class="checkboxDiv">          
+                  <input
+                     type="checkbox"  id="p-check" 
+                     name="python"
+                     checked={formState.python}
+                     onChange={inputChange} />               
+                  <label htmlFor="python">Python</label>
+               </div>
+
+               <div class="checkboxDiv">          
+                  <input
+                     type="checkbox"  id="a-check" 
+                     name="assembly"
+                     checked={formState.assembly}
+                     onChange={inputChange} />               
+                  <label htmlFor="assembly">Assembly</label>
+               </div>
+
+            </Checkboxes>
+
+         <TC_Div>
+            <label htmlFor="terms">
                Terms & Conditions
                <input
                type='checkbox'   id='termsField'
                name='terms'   checked={formState.terms}
+               data-cy="checkboxInput"
                onChange={inputChange}
                />
                { (errorState.terms.length > 0) ? <p>{errorState.terms}</p> : null }
             </label>
+            <button data-cy="submitInput" disabled={buttonState}>Submit</button>
+         </TC_Div>
 
-            <button disabled={buttonState}>Submit</button>
          </StyledForm>
          <pre>{JSON.stringify(displayForms, null, 2)}</pre>
          <Display displayForms={displayForms} />
@@ -197,6 +282,41 @@ const StyledForm = styled.form`
       width: 25%;
       margin: 1em auto;
       padding: .3em;
+      border: 2px solid gray;
+      border-radius: 5px;
+   }
+   select{
+      width: 78%;
+      padding: .6em .3em;
+      margin: .3em 0;
+      border: 2px solid gray;
+      border-radius: 5px;
+      font-weight: 700;  
+   }
 
+`;
+
+const TC_Div = styled.div`
+   display: flex;
+   flex-direction: row;
+`;
+
+const Checkboxes = styled.div`
+   display: flex;
+   justify-content: space-around;
+   flex-wrap: wrap;
+
+   .checkboxDiv{
+      display: flex;
+      align-items: center;
+      width: 35%;
+      border: 2px solid gray;
+      border-radius: 5px;
+      padding: 0 1em;
+      margin: 5px .5em;
+
+      input{
+         width:25%;
+      }
    }
 `;

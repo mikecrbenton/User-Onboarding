@@ -3,7 +3,8 @@ import styled from 'styled-components';
 
 
 
-/* THIS IS AN ADDITIONAL COMPONENT TO THE JSON.STRINGIFY() DISPLAY */
+/* THIS IS AN ADDITIONAL COMPONENT IN ADDITION
+   TO THE JSON.STRINGIFY() DISPLAY */
 
 
 function Display( { displayForms } ) {
