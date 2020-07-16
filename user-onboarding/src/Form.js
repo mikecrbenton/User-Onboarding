@@ -20,6 +20,7 @@ const formSchema = yup.object().shape( {
    java: yup.boolean(),
    python: yup.boolean(),
    assembly: yup.boolean(),
+   extratext: yup.string(),
    terms: yup.boolean().oneOf([true], "Need Agreement To Terms Of Use")
 } ) 
 
@@ -37,6 +38,7 @@ const [formState, setFormState] = useState( {
     java: false,
     python: false,
     assembly: false, 
+    extratext: "",
     terms: false,
 });
 // ERROR STATE
@@ -49,6 +51,7 @@ const [errorState, setErrorState] = useState( {
    java: "",
    python: "",
    assembly: "",
+   extratext: "",
    terms: ""
 });
 // or useState( { ...formState, terms: false} )
@@ -229,6 +232,13 @@ let yupStyling = {
                </div>
 
             </Checkboxes>
+            <label htmlFor="extratext">
+               How about some more thoughts?
+               <textarea
+                  id="extratext" name="extratext"
+                  value={formState.extratext}
+                  onChange={inputChange} />
+            </label>
 
          <TC_Div>
             <label htmlFor="terms">
@@ -293,6 +303,16 @@ const StyledForm = styled.form`
       border-radius: 5px;
       font-weight: 700;  
    }
+   textarea{
+      border: 2px solid gray;
+      border-radius: 5px;
+      width: 96%;
+      height: 40px;
+      margin: .3em 0;
+      padding: .6em .3em;
+      font-weight: 900;
+      font-size: 1.2rem;
+   }
 
 `;
 
@@ -320,3 +340,4 @@ const Checkboxes = styled.div`
       }
    }
 `;
+

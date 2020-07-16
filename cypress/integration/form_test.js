@@ -1,5 +1,9 @@
 //docs.cypress.io --> commands
 
+// IF YOU ARE TESTING FUNCTIONS, AND NOT FORMS
+// IMPORT THE FUNCTIONS TO TEST
+// import { function, function2 } from '../../someFile';
+
 describe("Example Test", () => {
      it("Should return true", ()=> {
       // USING CHAI ASSERTION LIBRARY
@@ -32,11 +36,17 @@ describe("Form Input Testing", ()=> {
       // ARRANGE ( Get elements )
       // ACT ( Mimics User Interaction )
       // ASSERT ( Test/Verify)
+
+      //USING A VARIABLE
+      const email = "mikecrbenton@gmail.com"
+
       cy.get('[data-cy=emailInput]')
-        .type("mikecrbenton@gmail.com")
-        .should("have.value", "mikecrbenton@gmail.com")
+        .type( email )
+        .should("have.value", email )
         .clear();
       cy.contains("Email is Required") 
+         .type("d")
+      cy.contains("Email must be valid")
       
    })
 
@@ -58,11 +68,19 @@ describe("Form Input Testing", ()=> {
          .should('have.value', 'html')
    })
 
-   it("Select Box Test", () => {
+   it("Select Boxes Test", () => {
       cy.get('#c-check')
          .check()
       cy.get('#p-check')
          .check()
+   })
+
+   const someText = "Here is some more thoughts..."
+
+   it("Text Area Test", () => {
+      cy.get('#extratext')
+         .type(someText)
+         .should("have.value",someText)
    })
 
    it("Terms Check Test" , () => {
@@ -73,6 +91,10 @@ describe("Form Input Testing", ()=> {
       })
 
    it("Submit Button", () => {
+      // FROM NOT FILLED OUT
+      cy.get('[data-cy=submitInput]')
+         .should('be.disabled')
+      // FORM FILLED OUT
       cy.get('[data-cy=nameInput]')
          .type("Mike Benton")
       cy.get('[data-cy=emailInput]')
@@ -81,6 +103,8 @@ describe("Form Input Testing", ()=> {
          .type("asdfasdf")
       cy.get('[data-cy=checkboxInput]')
          .check()
+      cy.get('[data-cy=submitInput]')
+         .should('not.be.disabled')
       cy.get('[data-cy=submitInput]')
          .click()
 
