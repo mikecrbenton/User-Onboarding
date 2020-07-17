@@ -1,6 +1,6 @@
 //docs.cypress.io --> commands
 
-// IF YOU ARE TESTING FUNCTIONS, AND NOT FORMS
+// IF YOU ARE TESTING FUNCTIONS(), AND NOT FORMS
 // IMPORT THE FUNCTIONS TO TEST
 // import { function, function2 } from '../../someFile';
 
@@ -17,7 +17,7 @@ describe("Form Input Testing", ()=> {
       cy.visit("http://localhost:3000")
    })
 
-
+   // NAME
    it("Finds the Name Input", ()=> {
       // ARRANGE ( Get elements )
       // ACT ( Mimics User Interaction )
@@ -31,7 +31,7 @@ describe("Form Input Testing", ()=> {
       cy.contains("Name is Required") 
       
    })
-
+   // EMAIL
    it("Finds the Email Input", ()=> {
       // ARRANGE ( Get elements )
       // ACT ( Mimics User Interaction )
@@ -49,7 +49,7 @@ describe("Form Input Testing", ()=> {
       cy.contains("Email must be valid")
       
    })
-
+   // PASSWORD
    it("Finds the Password Input", ()=> {
       // ARRANGE ( Get elements )
       // ACT ( Mimics User Interaction )
@@ -61,13 +61,13 @@ describe("Form Input Testing", ()=> {
       //cy.contains("Password is Required") 
       
    })
-
+   // SELECT-DROPDOWN
    it("Tests the Select Box", ()=> {
       cy.get('select')
          .select('HTML')
          .should('have.value', 'html')
    })
-
+   // SELECT-CHECKBOXES
    it("Select Boxes Test", () => {
       cy.get('#c-check')
          .check()
@@ -75,6 +75,7 @@ describe("Form Input Testing", ()=> {
          .check()
    })
 
+   //TEXTAREA
    const someText = "Here is some more thoughts..."
 
    it("Text Area Test", () => {
@@ -82,7 +83,7 @@ describe("Form Input Testing", ()=> {
          .type(someText)
          .should("have.value",someText)
    })
-
+   // BOOLEAN CHECKBOX
    it("Terms Check Test" , () => {
 
       cy.get('[data-cy=checkboxInput]')
@@ -90,6 +91,7 @@ describe("Form Input Testing", ()=> {
         .should("be.checked")
       })
 
+   // SUBMIT BUTTON DISABLED AND FUNCTIONAL
    it("Submit Button", () => {
       // FROM NOT FILLED OUT
       cy.get('[data-cy=submitInput]')
@@ -109,7 +111,7 @@ describe("Form Input Testing", ()=> {
          .click()
 
    })
-
+   // SUBMIT THE FORM
    it("Submit Form", () => {
       cy.get('#primary-form').submit()
    })
